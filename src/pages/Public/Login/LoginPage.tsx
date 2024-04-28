@@ -5,6 +5,8 @@ import { apiAuth } from "../../../api/userApi";
 import { useAuth } from "../../../context/AuthProvider/AuthProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { Button, Container, TextField, Typography } from "@mui/material";
+
 interface LoginFormState {
   email: string;
   password: string;
@@ -53,34 +55,50 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
+    <Container component="main" maxWidth="xs" style={{ marginTop: 200 }}>
+      <div>
+        <Typography component="h1" variant="h5">
+          Wonders Web App
+        </Typography>
+        <form className="" onSubmit={handleSubmit}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
             id="email"
+            label="Email Address"
             name="email"
+            autoComplete="email"
+            autoFocus
             value={formState.email}
             onChange={handleInputChange}
-            required
           />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
             type="password"
             id="password"
-            name="password"
+            autoComplete="current-password"
             value={formState.password}
             onChange={handleInputChange}
-            required
           />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-    </div>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className=""
+          >
+            Sign In
+          </Button>
+        </form>
+      </div>
+    </Container>
   );
 };
 
