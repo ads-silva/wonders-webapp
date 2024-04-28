@@ -1,31 +1,37 @@
-import React, { useEffect, useState } from "react";
-import MainLayout from "../../../components/MainLayout/MainLayout";
-import { Box, Container, Fab } from "@mui/material";
-import BasicTabs from "../../../components/BasicTabs/BasicTabs";
-import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
 import AddIcon from "@mui/icons-material/Add";
-import RejectIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
-import { apiGetReservations } from "../../../api/reservationApi";
-import { formatDateShort } from "../../../helpers/dateHelper";
-import { dafaultColumns } from "./constants/dafaultColumns";
-import { useNavigate } from "react-router-dom";
+import FeedOutlinedIcon from "@mui/icons-material/FeedOutlined";
+
+import { Box, Container, Fab } from "@mui/material";
 import {
   DataGrid,
   GridColDef,
   GridRowId,
   GridValidRowModel,
 } from "@mui/x-data-grid";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { apiGetReservations } from "../../../api/reservationApi";
+import BasicTabs from "../../../components/BasicTabs/BasicTabs";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
+import MainLayout from "../../../components/MainLayout/MainLayout";
+import { formatDateShort } from "../../../helpers/dateHelper";
+import { Reservation } from "../../../interfaces/Reservation";
+import { useAuth } from "../../../context/AuthProvider/AuthProvider";
 
 const Reservations: React.FC = () => {
   const navigate = useNavigate();
+  const { currentRole } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [selecteds, setSelecteds] = useState<GridRowId[]>([]);
+  const isRequesterRole = currentRole === "requester";
+  const isManagerRole = currentRole === "manager";
 
   const loadReservations = () => {
     setIsLoading(true);
     apiGetReservations()
       .then((response) => {
+        response.data.reverse();
         setReservations(
           response.data.map((item) => {
             return {
@@ -41,9 +47,24 @@ const Reservations: React.FC = () => {
         // SImulate long resquest with many itens, to show a loading splash
         setTimeout(() => {
           setIsLoading(false);
-        }, 1000);
+        }, 500);
       });
   };
+
+  const tableColumns: GridColDef[] = [
+    { field: "id", headerName: "No", width: 70 },
+    { field: "status", headerName: "Status", width: 130 },
+    { field: "reason", headerName: "Reason", width: 130 },
+    {
+      field: "managerComment",
+      headerName: "Manager Comment",
+      type: "string",
+      width: 200,
+    },
+    { field: "pin", headerName: "Pin", width: 70 },
+    { field: "createdAt", headerName: "Created At", width: 140 },
+    { field: "updatedAt", headerName: "Updated At", width: 140 },
+  ];
 
   useEffect(() => {
     loadReservations();
@@ -61,7 +82,7 @@ const Reservations: React.FC = () => {
             },
           }}
           pageSizeOptions={[5, 10]}
-          checkboxSelection
+          checkboxSelection={isManagerRole}
           onRowSelectionModelChange={(ids: GridRowId[]) => {
             setSelecteds(ids);
           }}
@@ -77,37 +98,55 @@ const Reservations: React.FC = () => {
         <BasicTabs
           pending={dataTable(
             reservations.filter((r) => r.status === "pending"),
-            dafaultColumns
+            tableColumns
           )}
           available={dataTable(
             reservations.filter((r) => r.status === "available"),
-            dafaultColumns
+            tableColumns
           )}
           rejected={dataTable(
             reservations.filter((r) => r.status === "rejected"),
-            dafaultColumns
+            tableColumns
           )}
           completed={dataTable(
             reservations.filter((r) => r.status === "completed"),
-            dafaultColumns
+            tableColumns
           )}
         />
-        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 5 }}>
-          <Fab
-            color="primary"
-            aria-label="add"
-            onClick={() => navigate("/new-reservation")}
-          >
-            <AddIcon />
-          </Fab>
-          <Fab
-            color="error"
-            aria-label="Reject"
-            disabled={selecteds.length === 0}
-            onClick={() => console.log("reject")}
-          >
-            <RejectIcon />
-          </Fab>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: isRequesterRole ? "space-between" : "flex-end",
+          }}
+        >
+          {isRequesterRole && (
+            <Fab
+              color="primary"
+              aria-label="add"
+              variant="extended"
+              onClick={() => navigate("/new-reservation")}
+            >
+              <AddIcon />
+              Add reservation
+            </Fab>
+          )}
+          <Box>
+            <Fab
+              color="primary"
+              aria-label="add"
+              variant="extended"
+              disabled={selecteds.length === 0 || selecteds.length > 1}
+              onClick={() => {
+                if (selecteds.length) {
+                  const reservationId = selecteds[0];
+                  navigate(`/reservations/${reservationId}`);
+                }
+              }}
+            >
+              <FeedOutlinedIcon />
+              Details
+            </Fab>
+          </Box>
         </Box>
       </Container>
     </MainLayout>
