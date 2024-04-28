@@ -10,6 +10,7 @@ interface AuthContextType {
   signout: () => void;
   loadMe: () => void;
   isAuthenticated: boolean;
+  currentRole: string;
 }
 
 const AuthContext = React.createContext<AuthContextType>(null!);
@@ -54,6 +55,7 @@ export const AuthProvider = ({
       signout,
       loadMe,
       isAuthenticated: isAuthenticated(),
+      currentRole: user?.role ?? "",
     }),
     [user]
   );
