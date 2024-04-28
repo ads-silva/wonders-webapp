@@ -1,10 +1,10 @@
-interface Product {
+export interface Product {
   id: number;
   name: string;
   description: string;
-  price: number;
+  price?: number;
   amount: number;
-  createdAt: string;
-  updatedAt: string;
-  amountReserved: number;
+  createdAt?: string;
+  updatedAt?: string;
+  amountReserved?: number;
 }
