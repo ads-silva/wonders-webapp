@@ -16,3 +16,15 @@ export const apiSaveReservation = async (payload: ReseravtionPayload) => {
 export const apiGetReservationById = async (id: string) => {
   return api.get<ReservationDetailsResponse>(`/reservation/${id}`);
 };
+
+export const apiAcceptReservation = async (id: string) => {
+  return api.patch<Reservation>(`/reservation/${id}/accept`);
+};
+
+export const apiRejectReservation = async (id: string) => {
+  return api.patch<Reservation>(`/reservation/${id}/reject`);
+};
+
+export const apiDeliverReservation = async (id: string) => {
+  return api.patch<Reservation>(`/reservation/${id}/deliver`);
+};

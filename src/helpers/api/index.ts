@@ -26,6 +26,9 @@ api.interceptors.response.use(
         window.location.href = "/login";
       }
     }
+    if (error.response?.status && [404, 400].includes(error.response.status)) {
+      throw error;
+    }
   }
 );
 

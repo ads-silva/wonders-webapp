@@ -127,7 +127,7 @@ const Reservations: React.FC = () => {
               onClick={() => navigate("/new-reservation")}
             >
               <AddIcon />
-              Add reservation
+              &nbsp;Add reservation
             </Fab>
           )}
           <Box>
@@ -144,7 +144,7 @@ const Reservations: React.FC = () => {
               }}
             >
               <FeedOutlinedIcon />
-              Details
+              &nbsp;Details
             </Fab>
           </Box>
         </Box>

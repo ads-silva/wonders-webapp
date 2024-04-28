@@ -1,6 +1,7 @@
 import BackIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 import BlockOutlinedIcon from "@mui/icons-material/BlockOutlined";
 import CheckIcon from "@mui/icons-material/Check";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import {
   Box,
   Breadcrumbs,
@@ -14,13 +15,19 @@ import {
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { apiGetReservationById } from "../../../api/reservationApi";
+import {
+  apiAcceptReservation,
+  apiDeliverReservation,
+  apiGetReservationById,
+  apiRejectReservation,
+} from "../../../api/reservationApi";
 import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
 import MainLayout from "../../../components/MainLayout/MainLayout";
 import { Product } from "../../../interfaces/Product";
 import { Reservation } from "../../../interfaces/Reservation";
 import { formatDateShort } from "../../../helpers/dateHelper";
 import { useAuth } from "../../../context/AuthProvider/AuthProvider";
+import { toast } from "react-toastify";
 
 const ReservationDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -32,6 +39,7 @@ const ReservationDetails: React.FC = () => {
 
   const isManagerRole = currentRole === "manager";
   const isPending = reservation?.status === "pending";
+  const isAvailable = reservation?.status === "available";
 
   const loadReservations = () => {
     if (reservationId) {
@@ -60,6 +68,71 @@ const ReservationDetails: React.FC = () => {
     }
   };
 
+  const handleAccept = () => {
+    if (reservationId) {
+      setIsLoading(true);
+      apiAcceptReservation(reservationId)
+        .then(() => {
+          loadReservations();
+          toast("Reservation approved successfully.", { type: "success" });
+        })
+        .catch(() => {
+          toast("Oops! Something went wrong. Please try again later.", {
+            type: "error",
+          });
+        })
+        .finally(() => {
+          // SImulate long resquest with many itens, to show a loading splash
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+        });
+    }
+  };
+
+  const handleReject = () => {
+    if (reservationId) {
+      setIsLoading(true);
+      apiRejectReservation(reservationId)
+        .then(() => {
+          loadReservations();
+          toast("Reservation rejected.", { type: "success" });
+        })
+        .catch(() => {
+          toast("Oops! Something went wrong. Please try again later.", {
+            type: "error",
+          });
+        })
+        .finally(() => {
+          // SImulate long resquest with many itens, to show a loading splash
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+        });
+    }
+  };
+
+  const handleDeliver = () => {
+    if (reservationId) {
+      setIsLoading(true);
+      apiDeliverReservation(reservationId)
+        .then(() => {
+          loadReservations();
+          toast("Reservation delivered.", { type: "success" });
+        })
+        .catch(() => {
+          toast("Oops! Something went wrong. Please try again later.", {
+            type: "error",
+          });
+        })
+        .finally(() => {
+          // SImulate long resquest with many itens, to show a loading splash
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+        });
+    }
+  };
   const tableColumns: GridColDef[] = [
     { field: "id", headerName: "No", width: 70 },
     { field: "name", headerName: "Name", width: 170 },
@@ -180,29 +253,39 @@ const ReservationDetails: React.FC = () => {
               variant="extended"
             >
               <BackIcon />
-              Back
+              &nbsp; Back
             </Fab>
             {isManagerRole && isPending && (
-              <>
-                <Fab
-                  color="success"
-                  aria-label="Accept"
-                  variant="extended"
-                  onClick={() => console.log("reject")}
-                >
-                  <CheckIcon />
-                  Accept
-                </Fab>
-                <Fab
-                  color="error"
-                  aria-label="Rejec"
-                  variant="extended"
-                  onClick={() => console.log("reject")}
-                >
-                  <BlockOutlinedIcon />
-                  Reject
-                </Fab>
-              </>
+              <Fab
+                color="success"
+                aria-label="Accept"
+                variant="extended"
+                onClick={handleAccept}
+              >
+                <CheckIcon />
+                &nbsp; Accept
+              </Fab>
+            )}
+            {isManagerRole && isPending && (
+              <Fab
+                color="error"
+                aria-label="Rejec"
+                variant="extended"
+                onClick={handleReject}
+              >
+                <BlockOutlinedIcon />
+                &nbsp;Reject
+              </Fab>
+            )}
+            {isManagerRole && isAvailable && (
+              <Fab
+                color="success"
+                aria-label="Rejec"
+                variant="extended"
+                onClick={handleDeliver}
+              >
+                <LocalShippingIcon /> &nbsp;Deliver
+              </Fab>
             )}
           </Box>
         </Box>

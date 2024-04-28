@@ -148,7 +148,7 @@ const NewReservation: React.FC = () => {
               variant="extended"
             >
               <BackIcon />
-              Back
+              &nbsp;Back
             </Fab>
             <Fab
               color="primary"
@@ -159,7 +159,7 @@ const NewReservation: React.FC = () => {
               }}
             >
               <AddIcon />
-              Add Product
+              &nbsp; Add Product
             </Fab>
             {selecteds.length > 0 && (
               <Fab
