@@ -17,7 +17,7 @@ import React, { useEffect, useState } from "react";
 import { apiLoadProducts } from "../../../api/productApi";
 import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
 import MainLayout from "../../../components/MainLayout/MainLayout";
-import { dafaultColumns } from "./constantss/dafaultColumns";
+import { dafaultColumns } from "./constants/dafaultColumns";
 
 const NewReservation: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);

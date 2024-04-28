@@ -7,7 +7,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RejectIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
 import { apiGetReservations } from "../../../api/reservationApi";
 import { formatDateShort } from "../../../helpers/dateHelper";
-import { dafaultColumns } from "./constantss/dafaultColumns";
+import { dafaultColumns } from "./constants/dafaultColumns";
 import { useNavigate } from "react-router-dom";
 import {
   DataGrid,
