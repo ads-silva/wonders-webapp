@@ -1,4 +1,4 @@
-import api from "../utils/api";
+import api from "../helpers/api";
 import { AuthPayload, AuthResponse } from "../interfaces/Auth";
 import { User } from "../interfaces/User";
 

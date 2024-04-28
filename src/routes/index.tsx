@@ -6,15 +6,16 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import Reservation from "../pages/Manager/reservations/Reservations";
+import Reservations from "../pages/Manager/reservations/Reservations";
 import LoginPage from "../pages/Public/Login/LoginPage";
 import AuthValidation from "./AuthValidation";
+import NewReservation from "../pages/Manager/reservations/newReservation";
 
 const hasTokenRedirect = () => {
   const token = Cookies.get("wonders_token");
 
   if (token) {
-    return redirect("/reservation");
+    return redirect("/reservations");
   }
   return null;
 };
@@ -26,7 +27,8 @@ const router = createBrowserRouter(
 
       {/* auth required */}
       <Route element={<AuthValidation />}>
-        <Route path="/reservation" element={<Reservation />} />
+        <Route path="/reservations" element={<Reservations />} />
+        <Route path="/new-reservation" element={<NewReservation />} />
       </Route>
       <Route path="/*" loader={() => redirect("/login")} />
     </Route>
